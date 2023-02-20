@@ -3,28 +3,27 @@ package com.guru.graphqlapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.guru.graphqlapp.presentation.CountriesScreen
+import com.guru.graphqlapp.presentation.CountriesViewModel
 import com.guru.graphqlapp.ui.theme.GraphQlAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GraphQlAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                }
+                val viewModel = hiltViewModel<CountriesViewModel>()
+                val state by viewModel.state.collectAsState()
+                CountriesScreen(
+                    state = state,
+                    onSelectedCountry = viewModel::selectCountry,
+                    onDismissCountryDialog = viewModel::dismissCountryDialog)
             }
         }
     }
 }
-
